@@ -1,0 +1,124 @@
+---
+apiVersion: kuadrant.io/v1
+kind: AuthPolicy
+metadata:
+  name: news-api-auth
+  namespace: app-api-news
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: news-api
+  rules:
+    authentication:
+      k8s-tokens:
+        kubernetesTokenReview:
+          audiences:
+            - https://kubernetes.default.svc.cluster.local
+    authorization:
+      k8s-rbac:
+        kubernetesSubjectAccessReview:
+          user:
+            selector: auth.identity.user.username
+          resourceAttributes:
+            group:
+              value: news-api.io
+            verb:
+              selector: request.method.@case:lower
+            resource:
+              selector: request.path.@extract:{"sep":"/","pos":1}
+            namespace:
+              value: default
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: alice
+  namespace: app-api-news
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: publisher
+  namespace: app-api-news
+rules:
+  - apiGroups: ["news-api.io"]
+    resources:
+      - sports
+      - economy
+    verbs:
+      - post
+      - get
+      - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: sports-reader
+  namespace: app-api-news
+rules:
+  - apiGroups: ["news-api.io"]
+    resources: ["sports"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: economy-reader
+  namespace: app-api-news
+rules:
+  - apiGroups: ["news-api.io"]
+    resources: ["economy"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: sports-readers
+  namespace: app-api-news
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: sports-reader
+subjects:
+  - kind: ServiceAccount
+    name: alice
+    namespace: app-api-news
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: niko
+  namespace: app-api-news
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: publishers
+  namespace: app-api-news
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: publisher
+subjects:
+  - kind: ServiceAccount
+    name: niko
+    namespace: app-api-news
+---
+apiVersion: kuadrant.io/v1
+kind: RateLimitPolicy
+metadata:
+  name: news-api-rate-limit
+  namespace: app-api-news
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: news-api
+  limits:
+    global:
+      rates:
+        - limit: 2
+          window: 10s
+      counters:
+        - expression: request.path

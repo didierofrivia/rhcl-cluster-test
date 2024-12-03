@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: news-api
+  namespace: app-api-news
+  labels:
+    app: news-api
+spec:
+  selector:
+    matchLabels:
+      app: news-api
+  template:
+    metadata:
+      labels:
+        app: news-api
+    spec:
+      containers:
+        - name: news-api
+          image: quay.io/kuadrant/authorino-examples:news-api
+          imagePullPolicy: Always
+          env:
+            - name: PORT
+              value: "3000"
+          tty: true
+          ports:
+            - containerPort: 3000
+  replicas: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: news-api
+  namespace: app-api-news
+  labels:
+    app: news-api
+spec:
+  selector:
+    app: news-api
+  ports:
+    - name: http
+      port: 3000
+      protocol: TCP
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: news-api
+  namespace: app-api-news
+spec:
+  parentRefs:
+    - name: ingress-gateway
+      namespace: gateway-system
+  hostnames:
+    - api.news.io
+  rules:
+    - matches:
+        - method: POST
+        - method: GET
+        - method: DELETE
+      backendRefs:
+        - name: news-api
+          port: 3000
