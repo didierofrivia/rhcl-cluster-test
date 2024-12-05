@@ -3,7 +3,7 @@ apiVersion: kuadrant.io/v1
 kind: AuthPolicy
 metadata:
   name: news-api-auth
-  namespace: app-api-news
+  namespace: app-system
 spec:
   targetRef:
     group: gateway.networking.k8s.io
@@ -34,13 +34,13 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: alice
-  namespace: app-api-news
+  namespace: app-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: publisher
-  namespace: app-api-news
+  namespace: app-system
 rules:
   - apiGroups: ["news-api.io"]
     resources:
@@ -55,7 +55,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: sports-reader
-  namespace: app-api-news
+  namespace: app-system
 rules:
   - apiGroups: ["news-api.io"]
     resources: ["sports"]
@@ -65,7 +65,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: economy-reader
-  namespace: app-api-news
+  namespace: app-system
 rules:
   - apiGroups: ["news-api.io"]
     resources: ["economy"]
@@ -75,7 +75,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: sports-readers
-  namespace: app-api-news
+  namespace: app-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -83,19 +83,19 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: alice
-    namespace: app-api-news
+    namespace: app-system
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: niko
-  namespace: app-api-news
+  namespace: app-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: publishers
-  namespace: app-api-news
+  namespace: app-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -103,13 +103,13 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: niko
-    namespace: app-api-news
+    namespace: app-system
 ---
 apiVersion: kuadrant.io/v1
 kind: RateLimitPolicy
 metadata:
   name: news-api-rate-limit
-  namespace: app-api-news
+  namespace: app-system
 spec:
   targetRef:
     group: gateway.networking.k8s.io
