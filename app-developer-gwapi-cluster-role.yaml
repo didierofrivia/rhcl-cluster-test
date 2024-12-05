@@ -4,8 +4,8 @@ metadata:
   name: gwapi-app-developer
 rules:
   - apiGroups: ["gateway.networking.k8s.io"]
-    resources: ["HTTPRoute", "GRPCRoute"]
+    resources: ["httproutes", "grpcroutes"]
     verbs: ["*"]
   - apiGroups: ["kuadrant.io"]
-    resources: ["AuthPolicy", "RateLimitPolicy"]
+    resources: ["authpolicies", "ratelimitpolicies"]
     verbs: ["*"]

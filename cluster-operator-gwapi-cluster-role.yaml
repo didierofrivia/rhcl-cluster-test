@@ -1,11 +1,11 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: gwapi-cluster-admin
+  name: gwapi-cluster-operator
 rules:
   - apiGroups: ["gateway.networking.k8s.io"]
-    resources: ["Gateways", "HTTPRoute", "GRPCRoute"]
+    resources: ["gateways", "httproutes", "grpcroutes"]
     verbs: ["*"]
   - apiGroups: ["kuadrant.io"]
-    resources: ["AuthPolicy", "RateLimitPolicy", "DNSPolicy", "TLSPolicy"]
+    resources: ["authpolicies", "ratelimitpolicies", "dnspolicies", "tlspolicies"]
     verbs: ["*"]
