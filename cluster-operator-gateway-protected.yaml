@@ -19,14 +19,6 @@ spec:
         namespaces:
           from: All
 ---
-apiVersion: cert-manager.io/v1
-kind: Issuer
-metadata:
-  name: cluster-operator-ca
-  namespace: gateway-system
-spec:
-  selfSigned: {}
----
 apiVersion: kuadrant.io/v1
 kind: TLSPolicy
 metadata:
@@ -39,5 +31,5 @@ spec:
     name: ingress-gateway
   issuerRef:
     group: cert-manager.io
-    kind: Issuer
+    kind: ClusterIssuer
     name: cluster-operator-ca

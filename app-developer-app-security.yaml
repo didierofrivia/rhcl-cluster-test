@@ -14,7 +14,7 @@ spec:
       k8s-tokens:
         kubernetesTokenReview:
           audiences:
-            - https://kubernetes.default.svc.cluster.local
+            - https://kubernetes.default.svc
     authorization:
       k8s-rbac:
         kubernetesSubjectAccessReview:
@@ -28,7 +28,7 @@ spec:
             resource:
               selector: request.path.@extract:{"sep":"/","pos":1}
             namespace:
-              value: default
+              value: app-system
 ---
 apiVersion: v1
 kind: ServiceAccount

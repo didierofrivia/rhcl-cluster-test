@@ -9,3 +9,6 @@ rules:
   - apiGroups: ["kuadrant.io"]
     resources: ["authpolicies", "ratelimitpolicies"]
     verbs: ["*"]
+  - apiGroups: ["news-api.io"]
+    resources: ["*"]
+    verbs: ["*"]
