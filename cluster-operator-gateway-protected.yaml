@@ -14,7 +14,7 @@ spec:
         certificateRefs:
           - name: ingress-gateway-cert
             kind: Secret
-      hostname: "*.io"
+      hostname: "*.pen.hcpapps.net"
       allowedRoutes:
         namespaces:
           from: All

@@ -9,7 +9,7 @@ spec:
     - name: http
       protocol: HTTP
       port: 80
-      hostname: "*.io"
+      hostname: "*.pen.hcpapps.net"
       allowedRoutes:
         namespaces:
           from: All
